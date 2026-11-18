@@ -1,6 +1,6 @@
 plugins {
-    id("com.android.application") version "8.3.2"
-    id("org.jetbrains.kotlin.android") version "1.9.23" apply false
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
@@ -31,24 +31,16 @@ android {
 }
 
 dependencies {
-    // Jetpack Compose & Material 3
     implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-
-    // WorkManager для фоновой генерации по расписанию
     implementation("androidx.work:work-runtime-ktx:2.9.0")
-
-    // Google Play Billing v7 (Подписки)
     implementation("com.android.billingclient:billing-ktx:7.0.0")
-
-    // EncryptedSharedPreferences для безопасного хранения токенов и ключей
     implementation("androidx.security:security-crypto:1.1.0-alpha06")
-
-    // Сеть и парсинг JSON
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 }
+
