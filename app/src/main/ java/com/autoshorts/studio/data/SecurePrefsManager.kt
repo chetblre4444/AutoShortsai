@@ -1,6 +1,7 @@
 package com.autoshorts.studio.data
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 
@@ -11,17 +12,22 @@ enum class CartoonStyle(val displayName: String, val promptModifier: String) {
 }
 
 class SecurePrefsManager(context: Context) {
-    private val masterKey = MasterKey.Builder(context)
-        .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-        .build()
+    private val prefs: SharedPreferences = try {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
 
-    private val prefs = EncryptedSharedPreferences.create(
-        context,
-        "autoshorts_secure_store",
-        masterKey,
-        EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-        EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-    )
+        EncryptedSharedPreferences.create(
+            context,
+            "autoshorts_secure_store",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    } catch (e: Exception) {
+        // Резервный вариант: если аппаратный Keystore недоступен, используем обычные SharedPreferences без краша
+        context.getSharedPreferences("autoshorts_fallback_store", Context.MODE_PRIVATE)
+    }
 
     var geminiApiKey: String
         get() = prefs.getString("gemini_api_key", "") ?: ""
@@ -54,4 +60,3 @@ class SecurePrefsManager(context: Context) {
         get() = prefs.getBoolean("sub_active_cached", false)
         set(value) = prefs.edit().putBoolean("sub_active_cached", value).apply()
 }
-
